@@ -7,8 +7,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float movementSpeed = 1f;
 
-    public float hunger = 100f;
-    public float thirst = 100f;
+    private Vector2 movement;
+
+    public int health = 20;
+    public int hunger = 20;
+    public int thirst = 20;
+    public int energy = 20;
 
     private Rigidbody2D body;
     private Animator animator;
@@ -24,10 +28,12 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (InputManager.GetMovement() != Vector2.zero)
+        movement = InputManager.GetMovement();
+        if (movement != Vector2.zero)
         {
+            body.velocity = Vector2.zero;
             animator.SetBool("Movement", true);
-            body.AddForce(movementSpeed * InputManager.GetMovement(), ForceMode2D.Impulse);
+            body.AddForce(movementSpeed * movement, ForceMode2D.Impulse);
             if(body.velocity.magnitude > movementSpeed)
                 body.velocity = body.velocity.normalized * movementSpeed;
         }
@@ -46,7 +52,7 @@ public class PlayerController : MonoBehaviour
             animator.SetInteger("Direction", 1);
         }
         
-        if (body.velocity.x != 0f) // Going Sideways
+        if (body.velocity.x > 0f || body.velocity.x < 0f) // Going Sideways
         {
             animator.SetInteger("Direction", 2);
             if(body.velocity.x < 0f)
