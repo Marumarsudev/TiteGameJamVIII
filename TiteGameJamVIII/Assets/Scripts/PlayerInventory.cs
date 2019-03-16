@@ -22,6 +22,8 @@ public class PlayerInventory : MonoBehaviour
 
     private NotifController notifController;
 
+    private float yoffset = 202f;
+
     void Start()
     {
         notifController = FindObjectOfType<NotifController>();
@@ -200,8 +202,16 @@ public class PlayerInventory : MonoBehaviour
         int i = 0;
         playersInventory.ForEach(item => {
             Vector3 origPos = item.GetComponent<RectTransform>().position;
-
-            item.GetComponent<RectTransform>().localPosition = new Vector3(0, 175 - (i * 135), origPos.z);
+            if(selectedItem % 4 == 0 && selectedItem >= 4)
+            {
+                yoffset = 202f + (135f * (selectedItem + 1 / 4));
+            }
+            else if (selectedItem < 4)
+            {
+                yoffset = 202f;
+            }
+            Debug.Log(yoffset);
+            item.GetComponent<RectTransform>().localPosition = new Vector3(0, yoffset - (i * 135), origPos.z);
             bool isActive = false;
             if(i == selectedItem)
                 isActive = true;

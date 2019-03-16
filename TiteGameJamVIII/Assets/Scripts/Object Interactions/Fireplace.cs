@@ -16,8 +16,11 @@ public class Fireplace : InteractableObject
     public Light fireLight;
     public SpriteRenderer fireSprite;
 
+    private NotifController notif;
+
     void Start()
     {
+        notif = FindObjectOfType<NotifController>().GetComponent<NotifController>();
         fireLight.enabled = false;
         fireSprite.enabled = false;
     }
@@ -52,7 +55,7 @@ public class Fireplace : InteractableObject
                 FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().RemoveItem(rawFish, 1);
             }
         }
-        else if (barkAmount == 0 || item == bark)
+        else if ((barkAmount == 0 && item == null) || item == bark)
         {
             bool hasBark = false;
             hasBark = FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().SearchItem(bark, 1);
@@ -61,16 +64,26 @@ public class Fireplace : InteractableObject
             {
                 barkAmount += 30f;
                 FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().RemoveItem(bark, 1);
+                notif.CreateNotif("You add bark to the fireplace.");
             }
         }
-        else
+        else if (!isBurning && item == null)
         {
             if(Random.Range(0f, 1f) > 0.3f)
             {
                 isBurning = true;
                 fireLight.enabled = true;
                 fireSprite.enabled = true;
+                notif.CreateNotif("You light a fire.");
             }
+            else
+            {
+                notif.CreateNotif("You failed to light a fire.");
+            }
+        }
+        else
+        {
+            notif.CreateNotif("Nothing interesting happened.");
         }
     }
 }

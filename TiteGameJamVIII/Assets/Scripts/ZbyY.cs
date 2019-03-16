@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ZbyY : MonoBehaviour
 {
-    private Transform transform;
+    private Transform stransform;
 
     [SerializeField]
     private int offset = 0;
@@ -12,12 +12,12 @@ public class ZbyY : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        transform = GetComponent<Transform>();
+        stransform = GetComponent<Transform>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.SetPositionAndRotation(new Vector3(transform.position.x, transform.position.y, transform.position.y + offset), Quaternion.identity);
+        stransform.SetPositionAndRotation(new Vector3(stransform.position.x, stransform.position.y, stransform.position.y + offset), Quaternion.identity);
     }
 }

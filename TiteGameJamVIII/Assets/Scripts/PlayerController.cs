@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using DG.Tweening;
 
 public class PlayerController : MonoBehaviour
 {
@@ -130,6 +131,7 @@ public class PlayerController : MonoBehaviour
         {
             health = 0;
             Debug.Log("Lol u ded bruh");
+            DOTween.KillAll();
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }
@@ -201,8 +203,9 @@ public class PlayerController : MonoBehaviour
         UpdateToolTip(col);
     }
 
-    void OnTriggerExit2D(Collider2D col)
+    public void ClearInteractingObject(Collider2D col)
     {
+        Debug.Log(interactingObject);
         if(interactingObject != null)
         {
             if(col.gameObject == interactingObject.gameObject)
@@ -211,6 +214,11 @@ public class PlayerController : MonoBehaviour
                 interactingObject = null;
             }
         }
+    }
+
+    void OnTriggerExit2D(Collider2D col)
+    {
+        ClearInteractingObject(col);
     }
 
     public void UseItem(Item item)
