@@ -14,10 +14,17 @@ public class PlayerController : MonoBehaviour
 
     private GameObject interactingObject;
 
+    public bool hasInputFocus = false;
+
     public int health = 20;
     public int hunger = 20;
     public int water = 20;
     public int energy = 20;
+
+    public int maxHealth = 6;
+    public int maxHunger = 20;
+    public int maxWater = 20;
+    public int maxEnergy = 20;
 
     public float hungerDecreaseRate = 5f;
     public float waterDecreaseRate = 5f;
@@ -55,6 +62,11 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (hunger > maxHunger)
+        {
+            hunger = maxHunger;
+        }
+
         if(energyTimer < energyDecreaseRate)
         {
             energyTimer += Time.deltaTime;
@@ -68,6 +80,11 @@ public class PlayerController : MonoBehaviour
                 energy = 0;
                 health--;
             }
+        }
+
+        if (energy > maxEnergy)
+        {
+            energy = maxEnergy;
         }
 
         if(waterTimer < waterDecreaseRate)
@@ -85,6 +102,11 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (water > maxWater)
+        {
+            water = maxWater;
+        }
+
         if(health <= 0)
         {
             health = 0;
@@ -100,7 +122,17 @@ public class PlayerController : MonoBehaviour
             if(col.gameObject.GetComponent<FishingSpot>())
             {
                 interactingObject = col.gameObject;
-                tooltipgui.text = "Press Space to Fish";
+                tooltipgui.text = "Press Space to fish.";
+            }
+            else if(col.gameObject.GetComponent<PalmTree>())
+            {
+                interactingObject = col.gameObject;
+                tooltipgui.text = "Press Space to shake the palm tree.";
+            }
+            else if(col.gameObject.GetComponent<Cookfish>())
+            {
+                interactingObject = col.gameObject;
+                tooltipgui.text = "Press Space to cook fish.";
             }
         }
     }
@@ -114,15 +146,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        DecreaseStatus();
 
+    void GetInputs()
+    {
         if(interactingObject != null)
         {
             if(InputManager.GetInteractDown())
             {
+                energyTimer += 6;
                 interactingObject.GetComponent<InteractableObject>().InteractWithObject();
             }
         }
@@ -163,6 +194,22 @@ public class PlayerController : MonoBehaviour
             {
                 sprite.flipX = false;
             }
+        }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        DecreaseStatus();
+
+        if(hasInputFocus)
+        {
+            GetInputs();
+        }
+        else
+        {
+            body.velocity = Vector2.zero;
+            animator.SetBool("Movement", false);
         }
     }
 }

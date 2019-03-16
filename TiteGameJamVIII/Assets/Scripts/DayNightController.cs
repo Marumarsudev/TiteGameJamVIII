@@ -2,14 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-using DigitalRuby.SimpleLUT;
 using UnityEngine.UI;
 using TMPro;
 
 public class DayNightController : MonoBehaviour
 {
-
-    public SimpleLUT lut;
 
     public TextMeshProUGUI daymessage;
     public int daycount = 1;
@@ -21,6 +18,8 @@ public class DayNightController : MonoBehaviour
     public TextMeshProUGUI energy;
     public TextMeshProUGUI water;
 
+    public Light sunLight;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,10 +29,9 @@ public class DayNightController : MonoBehaviour
     private void DayNightCycle()
     {
         daymessage.text = "Day : " + daycount.ToString();
-        //daymessage.DOColor(new Color(1f,1f,1f,1f), 0.5f).SetDelay(0.5f).OnComplete(() => {daymessage.DOColor(new Color(1f,1f,1f,0f), 0.5f).SetDelay(1f);});
-        DOTween.To(() => lut.TintColor, x => lut.TintColor = x, new Color(0.6f, 0.4f, 0.3f), 15f).OnStart(() => {daymessage.text = "Dusk : " + daycount.ToString();}).SetDelay(30f)
-        .OnComplete(() => {DOTween.To(() => lut.TintColor, x => lut.TintColor = x, new Color(0.2f, 0.2f, 0.25f), 15f).OnStart(() => {daymessage.text = "Night : " + daycount.ToString();})
-        .OnComplete(() => {DOTween.To(() => lut.TintColor, x => lut.TintColor = x, new Color(1f, 1f, 1f), 15f).OnStart(() => {daymessage.text = "Dawn : " + daycount.ToString();}).SetDelay(30f)
+        DOTween.To(() => sunLight.color, x => sunLight.color = x, new Color(0.6f, 0.4f, 0.3f), 15f).OnStart(() => {daymessage.text = "Dusk : " + daycount.ToString();}).SetDelay(30f)
+        .OnComplete(() => {DOTween.To(() => sunLight.color, x => sunLight.color = x, new Color(0.2f, 0.2f, 0.25f), 15f).OnStart(() => {daymessage.text = "Night : " + daycount.ToString();})
+        .OnComplete(() => {DOTween.To(() => sunLight.color, x => sunLight.color = x, new Color(1f, 1f, 1f), 15f).OnStart(() => {daymessage.text = "Dawn : " + daycount.ToString();}).SetDelay(30f)
         .OnComplete(() => {daycount++; DayNightCycle();});
         });});
     }
