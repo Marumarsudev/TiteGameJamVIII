@@ -15,6 +15,8 @@ public static class InputManager
     public static bool GetDirUpDown() => Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow);
     public static bool GetDirDownDown() => Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow);
 
+    public static bool GetSleepDown() => Input.GetKeyDown(KeyCode.Z);
+
     public static Vector2 GetMovement()
     {
         Vector2 movement = new Vector2();

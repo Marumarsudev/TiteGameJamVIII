@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using TMPro;
 
 public class PlayerInventory : MonoBehaviour
 {
@@ -17,8 +18,13 @@ public class PlayerInventory : MonoBehaviour
 
     private float inventoryOffset = 2000f;
 
+    public RectTransform maskTransform;
+
+    private NotifController notifController;
+
     void Start()
     {
+        notifController = FindObjectOfType<NotifController>();
         templateItem.gameObject.SetActive(false);
         inventoryTransform = GetComponent<RectTransform>();
         originalPos = new Vector3(inventoryTransform.position.x, inventoryTransform.position.y, inventoryTransform.position.z);
@@ -95,13 +101,26 @@ public class PlayerInventory : MonoBehaviour
     public bool SearchItem(Item item, int amount)
     {
         bool isFound = false;
+        bool isEnough = false;
         playersInventory.ForEach(iitem => {
             if (iitem.item == item)
             {
-                isFound = true;
+                if(iitem.amount >= amount)
+                {
+                    isFound = true;
+                    isEnough = true;
+                }
+                else
+                {
+                    notifController.CreateNotif("Not enough " + item.itemname + "s.");
+                }
                 return;
             }
         });
+        if(!isFound && !isEnough)
+        {
+            notifController.CreateNotif("No " + item.itemname + " found.");
+        }
         return isFound;
     }
 
@@ -109,22 +128,25 @@ public class PlayerInventory : MonoBehaviour
     {
         if (item.stackable)
         {
+            InventoryItem removedItem = null;
             playersInventory.ForEach(iitem => {
                 if (iitem.item == item)
                 {
                     iitem.amount -= amount;
                     if(iitem.amount <= 0)
                     {
-                        playersInventory.Remove(iitem);
-                        Destroy(iitem.gameObject);
+                        removedItem = iitem;
                     }
                     return;
                 }
             });
+            playersInventory.Remove(removedItem);
+            if(removedItem != null)
+                Destroy(removedItem.gameObject);
         }
         else
         {
-            InventoryItem removedItem = new InventoryItem();
+            InventoryItem removedItem = null;
             playersInventory.ForEach(iitem => {
                 if (iitem.item == item)
                 {
@@ -135,6 +157,10 @@ public class PlayerInventory : MonoBehaviour
             playersInventory.Remove(removedItem);
             Destroy(removedItem.gameObject);
         }
+
+        // TextMeshProUGUI notif = Instantiate(inventoryNotif, inventoryNotif.GetComponent<RectTransform>().position, Quaternion.identity, transform);
+        // notif.text = "Removed " + amount.ToString() + " " + item.itemname + ".";
+        // notif.GetComponent<NotifFade>().Fade();
 
         CheckSelected();
     }
@@ -155,12 +181,15 @@ public class PlayerInventory : MonoBehaviour
         }
         if(!addedToStack)
         {
-            InventoryItem tempItem = Instantiate(templateItem, templateItem.GetComponent<RectTransform>().position, Quaternion.identity, transform);
+            InventoryItem tempItem = Instantiate(templateItem, templateItem.GetComponent<RectTransform>().position, Quaternion.identity, maskTransform);
             tempItem.gameObject.SetActive(true);
             tempItem.item = item;
             tempItem.amount = amount;
             playersInventory.Add(tempItem);
         }
+
+        notifController.CreateNotif("Added " + amount.ToString() + " " + item.itemname + ".");
+
         CheckSelected();
     }
 

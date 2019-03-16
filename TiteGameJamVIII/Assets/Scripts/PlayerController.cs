@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -11,10 +12,15 @@ public class PlayerController : MonoBehaviour
     private Vector2 movement;
 
     public TextMeshProUGUI tooltipgui;
+    public TextMeshProUGUI itemInUseTooltip;
 
-    private GameObject interactingObject;
+    private InteractableObject interactingObject;
 
     public bool hasInputFocus = false;
+
+    public bool isAsleep = false;
+
+    private Item itemInUse;
 
     public int health = 20;
     public int hunger = 20;
@@ -40,6 +46,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        itemInUseTooltip.text = "";
         body = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         sprite = GetComponent<SpriteRenderer>();
@@ -70,15 +77,27 @@ public class PlayerController : MonoBehaviour
         if(energyTimer < energyDecreaseRate)
         {
             energyTimer += Time.deltaTime;
+            if(isAsleep)
+            {
+                energyTimer += Time.deltaTime * 3f;
+            }
         }
         else
         {
-            energyTimer = 0f;
-            energy--;
-            if(energy < 0)
+            if(isAsleep)
             {
-                energy = 0;
-                health--;
+                energyTimer = 0f;
+                energy += 1;
+            }
+            else
+            {
+                energyTimer = 0f;
+                energy--;
+                if(energy < 0)
+                {
+                    energy = 0;
+                    health--;
+                }
             }
         }
 
@@ -111,55 +130,152 @@ public class PlayerController : MonoBehaviour
         {
             health = 0;
             Debug.Log("Lol u ded bruh");
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+    }
+
+
+    void UpdateToolTip(Collider2D col)
+    {
+        if(col.gameObject.GetComponent<InteractableObject>())
+        {
+            if(col.gameObject.GetComponent<FishingSpot>())
+            {
+                interactingObject = col.gameObject.GetComponent<FishingSpot>();
+                if(itemInUse != null)
+                {
+                    tooltipgui.text = "Press Space to use " + itemInUse.itemname + " on " + " fishing spot.";
+                }
+                else
+                {
+                    tooltipgui.text = "Press Space to try to catch fish.";
+                }
+            }
+            else if(col.gameObject.GetComponent<PalmTree>())
+            {
+                interactingObject = col.gameObject.GetComponent<PalmTree>();
+                if(itemInUse != null)
+                {
+                    tooltipgui.text = "Press Space to use " + itemInUse.itemname + " on " + " palm tree.";
+                }
+                else
+                {
+                    tooltipgui.text = "Press Space to shake the palm tree.";
+                }
+            }
+            else if(col.gameObject.GetComponent<Fireplace>())
+            {
+                interactingObject = col.gameObject.GetComponent<Fireplace>();
+                if(itemInUse != null)
+                {
+                    tooltipgui.text = "Press Space to use " + itemInUse.itemname + " on " + " fireplace.";
+                }
+                else
+                {
+                    if(col.gameObject.GetComponent<Fireplace>().isBurning)
+                        tooltipgui.text = "Press Space to cook fish.";
+                    else if(col.gameObject.GetComponent<Fireplace>().barkAmount <= 0)
+                        tooltipgui.text = "Press space to add bark to the fireplace.";
+                    else if(!col.gameObject.GetComponent<Fireplace>().isBurning)
+                        tooltipgui.text = "Press space to light the fireplace.";
+                }
+            }
+            else if(col.gameObject.GetComponent<Rock>())
+            {
+                interactingObject = col.gameObject.GetComponent<Rock>();
+                if(itemInUse != null)
+                {
+                    tooltipgui.text = "Press Space to use " + itemInUse.itemname + " on " + " rock.";
+                }
+                else
+                {
+                    tooltipgui.text = "Press Space to pickup the rock.";
+                }
+            }
         }
     }
 
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if(col.gameObject.GetComponent<InteractableObject>())
-        {
-            if(col.gameObject.GetComponent<FishingSpot>())
-            {
-                interactingObject = col.gameObject;
-                tooltipgui.text = "Press Space to fish.";
-            }
-            else if(col.gameObject.GetComponent<PalmTree>())
-            {
-                interactingObject = col.gameObject;
-                tooltipgui.text = "Press Space to shake the palm tree.";
-            }
-            else if(col.gameObject.GetComponent<Cookfish>())
-            {
-                interactingObject = col.gameObject;
-                tooltipgui.text = "Press Space to cook fish.";
-            }
-        }
+        UpdateToolTip(col);
     }
 
     void OnTriggerExit2D(Collider2D col)
     {
-        if(col.gameObject == interactingObject)
+        if(interactingObject != null)
         {
-            tooltipgui.text = "";
-            interactingObject = null;
+            if(col.gameObject == interactingObject.gameObject)
+            {
+                tooltipgui.text = "";
+                interactingObject = null;
+            }
         }
     }
 
+    public void UseItem(Item item)
+    {
+        itemInUse = item;
+        itemInUseTooltip.text = "Using: " + item.itemname;
+        if(interactingObject != null)
+        {
+            tooltipgui.text = "Press Space to use " + itemInUse.itemname + " on " + interactingObject.objectname;
+        }
+        else
+        {
+            tooltipgui.text = "";
+        }
+    }
 
     void GetInputs()
     {
-        if(interactingObject != null)
+        if(interactingObject != null && !isAsleep)
         {
             if(InputManager.GetInteractDown())
             {
                 energyTimer += 6;
-                interactingObject.GetComponent<InteractableObject>().InteractWithObject();
+                interactingObject.GetComponent<InteractableObject>().InteractWithObject(itemInUse);
+                if(interactingObject != null)
+                {
+                    UpdateToolTip(interactingObject.GetComponent<Collider2D>());
+                }
+                else
+                {
+                    tooltipgui.text = "";
+                }
+            }
+        }
+
+        if(Input.GetKeyDown(KeyCode.X))
+        {
+            itemInUse = null;
+            itemInUseTooltip.text = "";
+            if(interactingObject != null)
+            {
+                UpdateToolTip(interactingObject.GetComponent<Collider2D>());
+            }
+            else
+            {
+                tooltipgui.text = "";
+            }
+        }
+
+        if(InputManager.GetSleepDown())
+        {
+            isAsleep = !isAsleep;
+            animator.SetBool("Asleep", isAsleep);
+            if(isAsleep)
+            {
+                Time.timeScale = 2.0f;
+            }
+            else
+            {
+                Time.timeScale = 1.0f;
             }
         }
 
         movement = InputManager.GetMovement();
-        if (movement != Vector2.zero)
+        if (movement != Vector2.zero && !isAsleep)
         {
             energyTimer += Time.deltaTime * 2;
             body.velocity = Vector2.zero;

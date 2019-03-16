@@ -6,8 +6,22 @@ public class PalmTree : InteractableObject
 {
     public Item coconut;
 
-    public override void InteractWithObject()
+    public Item rock;
+
+    public Item bark;
+
+    public override void InteractWithObject(Item item)
     {
-        FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().AddItem(coconut, 1);
+        if(item != null)
+        {
+            if (item == rock)
+            {
+                FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().AddItem(bark, 1);
+            }
+        }
+        else
+        {
+            FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().AddItem(coconut, 1);
+        }
     }
 }

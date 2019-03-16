@@ -12,22 +12,29 @@ public class InputFocus : MonoBehaviour
         player.hasInputFocus = true;
     }
 
+    public void CloseInventory()
+    {
+        inventory.hasInputFocus = false;
+        player.hasInputFocus = true;
+        inventory.CloseInventory();
+    }
+
+    public void OpenInventory()
+    {
+        player.hasInputFocus = false;
+        inventory.hasInputFocus = true;
+        inventory.OpenInventory();
+    }
+
     void Update()
     {
-        if (InputManager.GetInventoryDown() && !inventory.hasInputFocus)
+        if (InputManager.GetInventoryDown() && !inventory.hasInputFocus && !player.isAsleep)
         {
-
-            Debug.Log("INV open");
-            player.hasInputFocus = false;
-            inventory.hasInputFocus = true;
-            inventory.OpenInventory();
+            OpenInventory();
         }
         else if (InputManager.GetInventoryDown())
         {
-            Debug.Log("INV close");
-            inventory.hasInputFocus = false;
-            player.hasInputFocus = true;
-            inventory.CloseInventory();
+            CloseInventory();
         }
     }
 }

@@ -6,7 +6,7 @@ public class FishingSpot : InteractableObject
 {
     public Item rawFish;
 
-    public override void InteractWithObject()
+    public override void InteractWithObject(Item item)
     {
         FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().AddItem(rawFish, 1);
     }

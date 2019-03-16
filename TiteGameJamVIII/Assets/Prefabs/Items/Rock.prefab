@@ -10,10 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 5524402254999903203}
   - component: {fileID: 8748087407427000058}
-  - component: {fileID: 279720662486827862}
-  - component: {fileID: 7478097415975633153}
+  - component: {fileID: 3079186660075833201}
   m_Layer: 0
-  m_Name: RawFish
+  m_Name: Rock
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -45,13 +44,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03fbe7bb472232d40a39d25690491da9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemname: Raw Fish
-  stackable: 1
-  image: {fileID: 21300000, guid: 02dbab3fc0177de449994c2e26525c09, type: 3}
+  itemname: Rock
+  stackable: 0
+  image: {fileID: 21300000, guid: aa6815f1ffbbd54489c93b110fcedaa3, type: 3}
   interactions:
-  - {fileID: 279720662486827862}
-  - {fileID: 7478097415975633153}
---- !u!114 &279720662486827862
+  - {fileID: 3079186660075833201}
+--- !u!114 &3079186660075833201
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -60,20 +58,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 3202080402806153753}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2d42336e4b4a4b2459937c42af67289a, type: 3}
+  m_Script: {fileID: 11500000, guid: eb7e50536f279974e90d39e65d85d5e8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  feedAmount: 1
---- !u!114 &7478097415975633153
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3202080402806153753}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9e4068b418073644cbb86be46a7c73fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  waterAmount: 2
