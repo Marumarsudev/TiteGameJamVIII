@@ -6,8 +6,12 @@ public class Fireplace : InteractableObject
 {
     public Item rawFish;
     public Item cookedFish;
+    public Item burnedFish;
+
 
     public Item bark;
+
+    public Item shirt;
 
     public float barkAmount = 0f;
 
@@ -51,7 +55,14 @@ public class Fireplace : InteractableObject
 
             if(canCook)
             {
-                FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().AddItem(cookedFish, 1);
+                if(Random.Range(0f, 1f) > 0.95f)
+                {
+                    FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().AddItem(burnedFish, 1);
+                }
+                else
+                {
+                    FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().AddItem(cookedFish, 1);
+                }
                 FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().RemoveItem(rawFish, 1);
             }
         }
@@ -66,6 +77,11 @@ public class Fireplace : InteractableObject
                 FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().RemoveItem(bark, 1);
                 notif.CreateNotif("You add bark to the fireplace.");
             }
+        }
+        else if (isBurning && item == shirt)
+        {
+            notif.CreateNotif("The shirt burns, what did you expect?");
+            FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().RemoveItem(shirt, 1);
         }
         else if (!isBurning && item == null)
         {

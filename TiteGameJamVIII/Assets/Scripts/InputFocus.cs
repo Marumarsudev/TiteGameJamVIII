@@ -32,7 +32,7 @@ public class InputFocus : MonoBehaviour
         {
             OpenInventory();
         }
-        else if (InputManager.GetInventoryDown())
+        else if (InputManager.GetInventoryDown() || Input.GetKeyDown(KeyCode.Escape))
         {
             CloseInventory();
         }

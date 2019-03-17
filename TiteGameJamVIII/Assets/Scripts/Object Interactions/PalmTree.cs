@@ -10,11 +10,34 @@ public class PalmTree : InteractableObject
 
     public Item bark;
 
-    public NotifController notif;
+    public Item sticks;
+
+    private NotifController notif;
+
+    private int coconuts = 4;
+
+    private float coconutSpawnRate = 8f;
+    private float coconutTimer = 0;
 
     void Start()
     {
         notif = FindObjectOfType<NotifController>().GetComponent<NotifController>();
+    }
+
+    void Update()
+    {
+        if(Random.Range(0f, 1f) > 0.5f && coconuts < 4 && coconutTimer >= coconutSpawnRate)
+        {
+            coconutTimer = 0f;
+            notif.CreateNotif("A coconut appears in the palm tree.");
+            coconuts++;
+            if(coconuts >= 4)
+                coconuts = 4;
+        }
+        else
+        {
+            coconutTimer += Time.deltaTime;
+        }
     }
 
     public override void InteractWithObject(Item item)
@@ -23,18 +46,41 @@ public class PalmTree : InteractableObject
         {
             if (item == rock)
             {
-                if(Random.Range(0f, 1f) > 0.4f)
+                bool gotSomething = false;
+                if(Random.Range(0f, 1f) > 0.8f)
+                {
                     FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().AddItem(bark, 1);
-                else
-                    notif.CreateNotif("You failed to collect bark.");
+                    gotSomething = true;
+                }
+
+                if(Random.Range(0f, 1f) > 0.5f)
+                {
+                    FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().AddItem(sticks, 1);
+                    gotSomething = true;
+                }
+                if (!gotSomething)
+                    notif.CreateNotif("You failed to collect anything useful.");
+            }
+            else
+            {
+                notif.CreateNotif("Nothing interesting happens.");
             }
         }
         else
         {
-            if(Random.Range(0f, 1f) > 0.6f)
+            if(Random.Range(0f, 1f) > 0.6f && coconuts > 0)
+            {
                 FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().AddItem(coconut, 1);
+                coconuts--;
+            }
+            else if(coconuts == 0)
+            {
+                notif.CreateNotif("There are no more coconuts in the palm tree.");
+            }
             else
+            {
                 notif.CreateNotif("You failed to get a coconut to fall.");
+            }
         }
     }
 }

@@ -129,6 +129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectname: Fishing Spot
   rawFish: {fileID: 8748087407427000058, guid: 6844d681887c3b04b8d45881ad646af0, type: 3}
+  harpoon: {fileID: 8748087407427000058, guid: 66280e2a9d7060045929fd5f9de42b6b, type: 3}
 --- !u!58 &7227499746484591194
 CircleCollider2D:
   m_ObjectHideFlags: 0

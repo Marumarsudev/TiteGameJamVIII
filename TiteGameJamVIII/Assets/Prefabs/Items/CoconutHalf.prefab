@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 03fbe7bb472232d40a39d25690491da9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemname: Coconut Half
+  itemname: coconut half
   stackable: 1
   image: {fileID: 21300000, guid: 0e1013cbd064ae840b0de7696b2fe07c, type: 3}
   interactions:

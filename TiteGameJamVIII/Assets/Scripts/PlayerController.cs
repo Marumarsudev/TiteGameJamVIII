@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -41,12 +42,25 @@ public class PlayerController : MonoBehaviour
     public float waterTimer = 0f;
     public float energyTimer = 0f;
 
+    public float interactRate = 0.5f;
+    public float interactTimer = 0;
+
     private Rigidbody2D body;
     private Animator animator;
     private SpriteRenderer sprite;
+
+    private AudioSource audiosource;
+
+    public bool isDead = false;
+
+    public Image playerIsGone;
+
     // Start is called before the first frame update
     void Start()
     {
+        playerIsGone.enabled = false;
+        audiosource = GetComponent<AudioSource>();
+        Time.timeScale = 1.0f;
         itemInUseTooltip.text = "";
         body = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
@@ -127,12 +141,17 @@ public class PlayerController : MonoBehaviour
             water = maxWater;
         }
 
-        if(health <= 0)
+        if(health <= 0 && !isDead)
         {
+            isDead = true;
+            hasInputFocus = false;
             health = 0;
-            Debug.Log("Lol u ded bruh");
-            DOTween.KillAll();
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+            animator.SetBool("Dead", true);
+            transform.DOMoveX(transform.position.x, 5f).OnComplete(() => 
+            {
+                audiosource.Play();
+                playerIsGone.enabled = true;
+            });
         }
     }
 
@@ -194,6 +213,30 @@ public class PlayerController : MonoBehaviour
                     tooltipgui.text = "Press Space to pickup the rock.";
                 }
             }
+            else if(col.gameObject.GetComponent<Shirt>())
+            {
+                interactingObject = col.gameObject.GetComponent<Shirt>();
+                if(itemInUse != null)
+                {
+                    tooltipgui.text = "Press Space to use " + itemInUse.itemname + " on " + " shirt.";
+                }
+                else
+                {
+                    tooltipgui.text = "Press Space to pickup the shirt.";
+                }
+            }
+            else if(col.gameObject.GetComponent<Flints>())
+            {
+                interactingObject = col.gameObject.GetComponent<Flints>();
+                if(itemInUse != null)
+                {
+                    tooltipgui.text = "Press Space to use " + itemInUse.itemname + " on " + " flints.";
+                }
+                else
+                {
+                    tooltipgui.text = "Press Space to pickup the flints.";
+                }
+            }
         }
     }
 
@@ -237,10 +280,11 @@ public class PlayerController : MonoBehaviour
 
     void GetInputs()
     {
-        if(interactingObject != null && !isAsleep)
+        if(interactingObject != null && !isAsleep && interactTimer >= interactRate)
         {
             if(InputManager.GetInteractDown())
             {
+                interactTimer = 0;
                 energyTimer += 6;
                 interactingObject.GetComponent<InteractableObject>().InteractWithObject(itemInUse);
                 if(interactingObject != null)
@@ -325,6 +369,10 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         DecreaseStatus();
+
+        interactTimer += Time.deltaTime;
+        if(interactTimer > interactRate)
+            interactTimer = interactRate;
 
         if(hasInputFocus)
         {

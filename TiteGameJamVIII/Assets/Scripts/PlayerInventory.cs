@@ -6,8 +6,12 @@ using TMPro;
 
 public class PlayerInventory : MonoBehaviour
 {
+    public ItemDictionary itemDictionary;
+
     public bool hasInputFocus = false;
     public List<InventoryItem> playersInventory = new List<InventoryItem>();
+
+    private List<InventoryItem> itemsSelectedForCrafting = new List<InventoryItem>();
 
     private RectTransform inventoryTransform;
     private Vector3 originalPos;
@@ -67,6 +71,17 @@ public class PlayerInventory : MonoBehaviour
             
         }
 
+        if(Input.GetKeyDown(KeyCode.E) && playersInventory.Count > 0 && playersInventory[selectedItem] != null)
+        {
+            try
+            {
+                playersInventory[selectedItem].UseItem();
+            }
+            catch
+            {
+            }
+        }
+
         if(InputManager.GetInteractDown() && playersInventory.Count > 0 && playersInventory[selectedItem] != null)
         {
             try
@@ -78,6 +93,25 @@ public class PlayerInventory : MonoBehaviour
             }
         }
 
+        if(Input.GetKeyDown(KeyCode.C) && playersInventory.Count > 0 && playersInventory[selectedItem] != null)
+        {
+            try
+            {
+                if(!itemsSelectedForCrafting.Contains(playersInventory[selectedItem]))
+                    itemsSelectedForCrafting.Add(playersInventory[selectedItem]);
+                else
+                    itemsSelectedForCrafting.Remove(playersInventory[selectedItem]);
+            }
+            catch
+            {
+            }
+        }
+
+        if(Input.GetKeyDown(KeyCode.V))
+        {
+            Craft();
+        }
+
         CheckSelected();
     }
 
@@ -86,6 +120,44 @@ public class PlayerInventory : MonoBehaviour
         if(hasInputFocus)
         {
             GetInputs();
+        }
+    }
+
+    private void Craft()
+    {
+        //Harpoon
+        Debug.Log(itemsSelectedForCrafting.Count);
+        if(itemsSelectedForCrafting.Count == 3)
+        {
+            int canCraft = 0;
+            for (int i = 0; i < 3; i++)
+            {
+                itemsSelectedForCrafting.ForEach(iitem => {
+                    if(iitem.item == itemDictionary.items[0].materials[i])
+                    {
+                        canCraft++;
+                    }
+                });
+            }
+
+            Debug.Log(canCraft);
+
+            if (canCraft == 3)
+            {
+                itemsSelectedForCrafting.ForEach(iitem => {
+                    RemoveItem(iitem.item, 1);
+                });
+                itemsSelectedForCrafting.Clear();
+                AddItem(itemDictionary.items[0].result, 1);
+            }
+            else
+            {
+                notifController.CreateNotif("Crafting failed");
+            }
+        }
+        else
+        {
+            notifController.CreateNotif("Crafting failed");
         }
     }
 
@@ -210,12 +282,14 @@ public class PlayerInventory : MonoBehaviour
             {
                 yoffset = 202f;
             }
-            Debug.Log(yoffset);
             item.GetComponent<RectTransform>().localPosition = new Vector3(0, yoffset - (i * 135), origPos.z);
             bool isActive = false;
+            bool isSelectedForCraft = false;
             if(i == selectedItem)
                 isActive = true;
-            item.UpdateGUI(isActive);
+            if(itemsSelectedForCrafting.Contains(playersInventory[i]))
+                isSelectedForCraft = true;
+            item.UpdateGUI(isActive, isSelectedForCraft);
             i++;
         });
         }

@@ -17,7 +17,7 @@ public class NotifFade : MonoBehaviour
         // notif.alpha = 0f;
         notif.DOFade(0f, 0f);
         notif.DOFade(1f, 0.2f);
-        DOTween.To(() => notif.GetComponent<RectTransform>().position, x => notif.GetComponent<RectTransform>().position = x, new Vector3(origPos.x, origPos.y - 300, origPos.z), 0.7f).SetDelay(0.5f);
-        notif.DOFade(0f, 0.2f).SetDelay(0.7f).OnComplete(() => {Destroy(gameObject);});
+        DOTween.To(() => notif.GetComponent<RectTransform>().position, x => notif.GetComponent<RectTransform>().position = x, new Vector3(origPos.x, origPos.y - 300, origPos.z), 3f);
+        notif.DOFade(0f, 0.2f).SetDelay(1.5f).OnComplete(() => {Destroy(gameObject);});
     }
 }

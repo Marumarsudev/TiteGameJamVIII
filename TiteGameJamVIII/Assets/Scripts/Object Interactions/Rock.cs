@@ -6,9 +6,23 @@ public class Rock : InteractableObject
 {
     public Item rock;
 
+    private NotifController notif;
+
+    void Start()
+    {
+        notif = FindObjectOfType<NotifController>().GetComponent<NotifController>();
+    }
+
     public override void InteractWithObject(Item item)
     {
-        FindObjectOfType<PlayerInventory>().AddItem(rock, 1);
-        Destroy(gameObject);
+        if(item != null)
+        {
+            notif.CreateNotif("Nothing interesting happens.");
+        }
+        else
+        {
+            FindObjectOfType<PlayerInventory>().AddItem(rock, 1);
+            Destroy(gameObject);
+        }
     }
 }
