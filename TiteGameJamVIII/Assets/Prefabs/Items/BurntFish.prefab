@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemname: burnt fish
+  usedescription: Burnt fish... learn to cook.
   stackable: 1
   image: {fileID: 21300000, guid: 15ff6c3f130687043b718698d43a63f3, type: 3}
   interactions: []

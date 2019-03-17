@@ -6,6 +6,7 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     public string itemname;
+    public string usedescription;
     public bool stackable;
     public Sprite image;
     public List<ItemInteractions> interactions = new List<ItemInteractions>();

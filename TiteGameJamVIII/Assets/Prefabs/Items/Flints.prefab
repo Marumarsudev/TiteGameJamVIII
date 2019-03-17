@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemname: flints
+  usedescription: Used for crafting.
   stackable: 1
   image: {fileID: 21300000, guid: deccf876fa91bb14e8e7d6eb8070df70, type: 3}
   interactions: []

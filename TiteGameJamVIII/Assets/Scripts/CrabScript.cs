@@ -27,9 +27,13 @@ public class CrabScript : MonoBehaviour
             rave = true;
             gameObject.GetComponent<SpriteRenderer>().enabled = true;
             Vector2 MoveTo = new Vector2(player.transform.position.x + Random.Range(-1.5f, 1.5f), player.transform.position.y + Random.Range(-1.5f, 1.5f));
-            transform.DOMove(MoveTo, 5f).OnComplete(() => 
+            transform.DOMove(MoveTo, 5f).SetDelay(3f).OnComplete(() => 
             {
                 animator.SetTrigger("Rave");
+                if(!player.audiosource.isPlaying)
+                    player.audiosource.Play();
+                if(!player.playerIsGone.enabled)
+                    player.playerIsGone.enabled = true;
             });
         }
     }

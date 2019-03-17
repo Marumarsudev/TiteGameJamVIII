@@ -10,8 +10,13 @@ public class FishingSpot : InteractableObject
 
     public Item harpoon;
 
+    public AudioClip splash;
+
+    private AudioSource audioSource;
+
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         notif = FindObjectOfType<NotifController>().GetComponent<NotifController>();
     }
 
@@ -19,6 +24,7 @@ public class FishingSpot : InteractableObject
     {
         if (item == harpoon)
         {
+            audioSource.PlayOneShot(splash);
             if(Random.Range(0f, 1f) > 0.3f)
             {
                 FindObjectOfType<PlayerInventory>().GetComponent<PlayerInventory>().AddItem(rawFish, 1);

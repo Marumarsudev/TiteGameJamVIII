@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemname: harpoon
+  usedescription: I can catch fish with this.
   stackable: 0
   image: {fileID: 21300000, guid: 5588aec37d30da549b8600e1917372e9, type: 3}
   interactions: []

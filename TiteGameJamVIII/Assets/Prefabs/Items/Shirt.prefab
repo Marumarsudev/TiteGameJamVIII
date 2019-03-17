@@ -45,7 +45,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemname: shirt
-  stackable: 0
+  usedescription: 'Can be used as something other than a shirt now.<br>Space: Rip
+    apart'
+  stackable: 1
   image: {fileID: 21300000, guid: af8f136579141524cb8491797fcc30ce, type: 3}
   interactions:
   - {fileID: 7290763939933541670}

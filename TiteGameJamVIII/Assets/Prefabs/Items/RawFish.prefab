@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemname: raw fish
+  usedescription: 'I should try to cook this.<br>Space: Eat'
   stackable: 1
   image: {fileID: 21300000, guid: 02dbab3fc0177de449994c2e26525c09, type: 3}
   interactions:

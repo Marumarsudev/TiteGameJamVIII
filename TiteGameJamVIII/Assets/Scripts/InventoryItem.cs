@@ -36,13 +36,15 @@ public class InventoryItem : MonoBehaviour
         {
             bg.color = Color.white;
         }
-        text.text = amount.ToString() + " x " + item.itemname.ToString();
+        if(item.stackable)
+            text.text = amount.ToString() + " x " + item.itemname.ToString();
+        else
+            text.text = item.itemname.ToString();
     }
 
     public void UseItem()
     {
         FindObjectOfType<PlayerController>().UseItem(item);
-        FindObjectOfType<InputFocus>().CloseInventory();
     }
 
     public void InteractWithItem()

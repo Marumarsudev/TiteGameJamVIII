@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemname: rock
+  usedescription: Used for smashing.
   stackable: 0
   image: {fileID: 21300000, guid: aa6815f1ffbbd54489c93b110fcedaa3, type: 3}
   interactions: []

@@ -22,17 +22,16 @@ public class PlayerController : MonoBehaviour
 
     public bool isAsleep = false;
 
-    private Item itemInUse;
+    public Item itemInUse;
 
     public int health = 20;
     public int hunger = 20;
     public int water = 20;
     public int energy = 20;
 
-    public int maxHealth = 6;
-    public int maxHunger = 20;
-    public int maxWater = 20;
-    public int maxEnergy = 20;
+    private int maxHunger = 20;
+    private int maxWater = 20;
+    private int maxEnergy = 20;
 
     public float hungerDecreaseRate = 5f;
     public float waterDecreaseRate = 5f;
@@ -49,11 +48,18 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
     private SpriteRenderer sprite;
 
-    private AudioSource audiosource;
+    public AudioSource audiosource;
+
+    public AudioClip[] audioClip;
 
     public bool isDead = false;
 
     public Image playerIsGone;
+
+    public void PlayFootstep()
+    {
+        audiosource.PlayOneShot(audioClip[Random.Range(0, 2)], 1f);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -143,15 +149,11 @@ public class PlayerController : MonoBehaviour
 
         if(health <= 0 && !isDead)
         {
+            audiosource.PlayOneShot(audioClip[4], 2.0f);
             isDead = true;
-            hasInputFocus = false;
             health = 0;
             animator.SetBool("Dead", true);
-            transform.DOMoveX(transform.position.x, 5f).OnComplete(() => 
-            {
-                audiosource.Play();
-                playerIsGone.enabled = true;
-            });
+            tooltipgui.text = "You're totally dying, press any key to give up.";
         }
     }
 
@@ -237,6 +239,18 @@ public class PlayerController : MonoBehaviour
                     tooltipgui.text = "Press Space to pickup the flints.";
                 }
             }
+            else if(col.gameObject.GetComponent<Boat>())
+            {
+                interactingObject = col.gameObject.GetComponent<Boat>();
+                if(itemInUse != null)
+                {
+                    tooltipgui.text = "Press Space to use " + itemInUse.itemname + " on " + " flints.";
+                }
+                else
+                {
+                    tooltipgui.text = "Press Space to get on the boat.";
+                }
+            }
         }
     }
 
@@ -266,11 +280,24 @@ public class PlayerController : MonoBehaviour
 
     public void UseItem(Item item)
     {
-        itemInUse = item;
-        itemInUseTooltip.text = "Using: " + item.itemname;
+        if(itemInUse == item)
+        {
+            itemInUse = null;
+            itemInUseTooltip.text = "";
+        }
+        else
+        {
+            itemInUse = item;
+            itemInUseTooltip.text = "Using: " + item.itemname;
+        }
         if(interactingObject != null)
         {
-            tooltipgui.text = "Press Space to use " + itemInUse.itemname + " on " + interactingObject.objectname;
+            if(itemInUse != null)
+                tooltipgui.text = "Press Space to use " + itemInUse.itemname + " on " + interactingObject.objectname;
+            else
+            {
+                UpdateToolTip(interactingObject.GetComponent<Collider2D>());
+            }
         }
         else
         {
@@ -368,13 +395,16 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        DecreaseStatus();
+        if(!isDead)
+        {
+            DecreaseStatus();
+        }
 
         interactTimer += Time.deltaTime;
         if(interactTimer > interactRate)
             interactTimer = interactRate;
 
-        if(hasInputFocus)
+        if(hasInputFocus && !isDead)
         {
             GetInputs();
         }
@@ -382,6 +412,16 @@ public class PlayerController : MonoBehaviour
         {
             body.velocity = Vector2.zero;
             animator.SetBool("Movement", false);
+        }
+
+        if(isDead)
+        {
+            tooltipgui.text = "You're totally dying, press 'R' to give up.";
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                DOTween.KillAll();
+                SceneManager.LoadScene("Failed");
+            }
         }
     }
 }

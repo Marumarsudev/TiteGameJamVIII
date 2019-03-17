@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemname: sticks
+  usedescription: Probably burns, can be used as a handle for something.
   stackable: 1
   image: {fileID: 21300006, guid: 0e1013cbd064ae840b0de7696b2fe07c, type: 3}
   interactions: []

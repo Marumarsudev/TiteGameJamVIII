@@ -20,14 +20,30 @@ public class DayNightController : MonoBehaviour
 
     public Light sunLight;
 
+    public Transform boat;
+
+    public int surviveForDays = 2;
+
+    private AudioSource audioSource;
+
+    public AudioClip speech;
+
+    private bool boatLeft = false;
+
     // Start is called before the first frame update
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         DayNightCycle();
     }
 
     private void DayNightCycle()
     {
+        if (daycount == surviveForDays && !player.isDead && !boatLeft)
+        {
+            boatLeft = true;
+            boat.transform.DOMove(new Vector2(-3.1f, -19f), 15f).OnComplete(() => {audioSource.PlayOneShot(speech);});
+        }
         daymessage.text = "Day : " + daycount.ToString();
         DOTween.To(() => sunLight.color, x => sunLight.color = x, new Color(0.6f, 0.4f, 0.3f), 15f).OnStart(() => {daymessage.text = "Dusk : " + daycount.ToString();}).SetDelay(30f)
         .OnComplete(() => {DOTween.To(() => sunLight.color, x => sunLight.color = x, new Color(0.2f, 0.2f, 0.25f), 15f).OnStart(() => {daymessage.text = "Night : " + daycount.ToString();})

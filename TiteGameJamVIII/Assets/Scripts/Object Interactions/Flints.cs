@@ -21,7 +21,7 @@ public class Flints : InteractableObject
         }
         else
         {
-            FindObjectOfType<PlayerInventory>().AddItem(flints, 4);
+            FindObjectOfType<PlayerInventory>().AddItem(flints, Random.Range(1, 4));
             Destroy(gameObject);
         }
     }

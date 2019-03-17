@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemname: coconut half
+  usedescription: 'I can drink from this.<br>Space: Drink'
   stackable: 1
   image: {fileID: 21300000, guid: 0e1013cbd064ae840b0de7696b2fe07c, type: 3}
   interactions:

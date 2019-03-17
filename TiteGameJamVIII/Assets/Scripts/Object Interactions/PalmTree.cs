@@ -19,8 +19,13 @@ public class PalmTree : InteractableObject
     private float coconutSpawnRate = 8f;
     private float coconutTimer = 0;
 
+    public AudioClip[] hitclips;
+
+    private AudioSource audioSource;
+
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         notif = FindObjectOfType<NotifController>().GetComponent<NotifController>();
     }
 
@@ -46,6 +51,7 @@ public class PalmTree : InteractableObject
         {
             if (item == rock)
             {
+                audioSource.PlayOneShot(hitclips[Random.Range(0, hitclips.Length)]);
                 bool gotSomething = false;
                 if(Random.Range(0f, 1f) > 0.8f)
                 {

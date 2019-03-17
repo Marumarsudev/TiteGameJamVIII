@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemname: bark
+  usedescription: Can be used as firewood<br>
   stackable: 1
   image: {fileID: 21300008, guid: 0e1013cbd064ae840b0de7696b2fe07c, type: 3}
   interactions: []

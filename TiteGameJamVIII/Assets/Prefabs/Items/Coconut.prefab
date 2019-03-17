@@ -45,6 +45,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemname: coconut
+  usedescription: 'Contains yummy liquids.<br>Space: Attempt to break.'
   stackable: 1
   image: {fileID: 21300002, guid: 0e1013cbd064ae840b0de7696b2fe07c, type: 3}
   interactions:
